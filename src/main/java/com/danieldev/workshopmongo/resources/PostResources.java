@@ -1,5 +1,6 @@
 package com.danieldev.workshopmongo.resources;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,9 +8,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.danieldev.workshopmongo.domain.Post;
+import com.danieldev.workshopmongo.resources.utils.URL;
 import com.danieldev.workshopmongo.services.PostService;
 import com.danieldev.workshopmongo.services.exceptions.ObjectNotFoundException;
 
@@ -29,5 +32,12 @@ public class PostResources {
 		} else {
 			throw new ObjectNotFoundException("Objeto não encontrado");
 		}		
+	}
+	
+	@GetMapping(value = "/titleSearch")
+	public ResponseEntity<List<Post>> findByTitle(@RequestParam(value = "text", defaultValue = "") String text) {
+		text = URL.decodeParams(text);
+		List<Post> list = service.findByTitle(text);
+		return ResponseEntity.ok().body(list);
 	}
 }
